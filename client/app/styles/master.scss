@@ -1,0 +1,365 @@
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  animation: App-logo-spin infinite 20s linear;
+  height: 40vmin;
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+
+body {
+  background-image: linear-gradient(to bottom, rgba(38,105,205,0.82), rgba(108,21,176,0.7));
+  background-repeat: no-repeat;
+  background-size: cover;
+  height: 100%;
+}
+
+#login-header-section {
+  height: auto;
+  margin-top: 50px;
+  padding: 10px 5px;
+  width: auto;
+  text-align: center;
+}
+
+.login-header-title {
+  font-size: 50px;
+  margin: 0px;
+  color: #fff;
+}
+
+#login-main-container {
+  margin: 10% 35%;
+  padding: 30px;
+  width: 30%;
+  height: auto;
+  border-radius: 30px;
+  background-color: #fff;
+}
+
+#login-email {
+  height: 50px;
+  padding-top: 15px;
+  width: 70%;
+  margin-left: 15%;
+  color: #818080;
+  text-align: left;
+  background-color: #fff;
+  border-bottom: dotted;
+  border-top: none;
+  border-right: none;
+  border-left: none;
+  border-color: rgba(0,0,0,0.75);
+}
+
+#login-password {
+  height: 50px;
+  padding-top: 15px;
+  width: 70%;
+  margin-left: 15%;
+  color: #818080;
+  text-align: left;
+  background-color: #fff;
+  border-bottom: dotted;
+  border-top: none;
+  border-right: none;
+  border-left: none;
+  border-color: rgba(0,0,0,0.75);
+}
+
+#login-main-section {
+  margin-bottom: 50px;
+}
+
+#login-button {
+  height: auto;
+  width: 60%;
+  margin-left: 20%;
+  margin-top: 40px;
+  background-image: linear-gradient(to top left, #743ad5 0%, #d53a9d 100%);
+  border-radius: 30px;
+  color: #fff;
+  text-align: center;
+}
+
+#login ::placeholder {
+  color: rgba(255,255,255,0.75);
+}
+
+#login-button:hover span {
+  padding-right: 25px;
+}
+
+#login-button span {
+  cursor: pointer;
+  display: inline-block;
+  position: relative;
+  transition: 0.5s;
+}
+
+#login-button span:after {
+  content: '\00bb';
+  position: absolute;
+  opacity: 0;
+  top: 0;
+  right: -20px;
+  transition: 0.5s;
+}
+
+#login-button:hover span:after {
+  opacity: 1;
+  right: 0;
+}
+
+#login-button:active {
+  /*background-color: rgba(255,255,255,0.95);*/
+  /*color: #000;*/
+  border-color: #fff;
+}
+
+.registration.student.container {
+  margin: 5% 10%;
+  padding: 30px 30px;
+  width: auto;
+  height: auto;
+  border-radius: 30px;
+  background-color: #fff;
+}
+
+.registration.fields {
+  height: 50px;
+  padding-top: 15px;
+  width: auto;
+  color: #818080;
+  text-align: left;
+  background-color: #fff;
+  border-bottom: dotted;
+  border-top: none;
+  border-right: none;
+  border-left: none;
+  border-color: rgba(0,0,0,0.75);
+}
+
+.registration::placeholder {
+  color: #787876;
+}
+
+#registration-title {
+  text-align: center;
+}
+
+#registration-divider {
+}
+
+#registration-subheading {
+  margin: 30px 0px 5px;
+}
+
+.registration.fields:hover {
+  border-image: linear-gradient(to left, #743ad5 0%, #d53a9d 100%);
+  border-image-slice: 1;
+  border-width: 2px;
+  border-bottom: dotted;
+  border-top: none;
+  border-right: none;
+  border-left: none;
+}
+
+.registration.fields:active {
+  border-image-slice: 1;
+  border-width: 2px;
+  border-style: dotted;
+  border-bottom: dotted;
+  border-top: none;
+  border-right: none;
+  border-left: none;
+}
+
+#register-button {
+  height: auto;
+  width: 60%;
+  margin-left: 20%;
+  margin-top: 40px;
+  background-image: linear-gradient(to top left, #743ad5 0%, #d53a9d 100%);
+  border-radius: 30px;
+  color: #fff;
+  text-align: center;
+}
+
+#registration-subtitle {
+  text-align: center;
+  margin: 5px 0px;
+}
+
+#registration-main-row {
+  margin: 0px;
+  padding: 0px;
+  height: auto;
+}
+
+#register-button:hover {
+  background-color: #fff;
+  background-image: none;
+  color: #000;
+  border-width: 2px;
+  border-color: #000;
+}
+
+.registration.fields.large {
+  height: 80px;
+  width: 100%;
+}
+
+#results_h6 {
+  margin: 0;
+  font-size: medium;
+}
+
+#field-col {
+  padding: 10px 0px 0px 5px;
+  width: auto;
+}
+
+#results-col {
+  padding: 0px 0px 0px 15px;
+  width: auto;
+}
+
+#results_h5 {
+  padding: 5px 0px 0px 0px;
+  margin: 0;
+  width: auto;
+}
+
+#results_subtitle {
+  text-align: left;
+  margin: 10px 0px 20px 0px;
+}
+
+#email-button {
+  height: auto;
+  width: 50%;
+  margin-left: 25%;
+  margin-top: 10px;
+  background-image: linear-gradient(to top left, #743ad5 0%, #d53a9d 100%);
+  border-radius: 30px;
+  color: #fff;
+  text-align: center;
+}
+
+#matches_tile {
+  border-image-slice: 1;
+  border-width: 2px;
+  border-bottom: dotted;
+  border-top: dotted;
+  border-right: none;
+  border-left: none;
+  padding: 5px;
+  margin: 5px 0px 5px 0px;
+  width: 100%;
+}
+
+#results-main-section {
+  margin-top: 5%;
+}
+
+.thank.you.row {
+  margin-bottom: 30px;
+  height: auto;
+  width: auto;
+  text-align: left;
+}
+
+.thank.you.row.end {
+  margin-bottom: 5px;
+}
+
+#redirect-container {
+  margin: 5% 30%;
+  padding: 30px 30px;
+  width: auto;
+  height: auto;
+  border-radius: 30px;
+  background-color: #fff;
+  max-width: 40%;
+}
+
+#thank-you-col {
+  padding: 0px;
+  border-width: 2px;
+  border-bottom: dotted;
+  border-top: none;
+  border-right: none;
+  border-left: none;
+  border-image-source: linear-gradient(to top left, #743ad5 0%, #d53a9d 100%);
+  border-image-slice: 20;
+}
+
+
+#logout-button {
+  height: auto;
+  width: 20%;
+  margin-left: 5%;
+  margin-top: 20px;
+  margin-bottom: 40px;
+  background-image: linear-gradient(to top left, #743ad5 0%, #d53a9d 100%);
+  border-radius: 30px;
+  color: #fff;
+  text-align: center;
+}
+
+#logout-button:hover span {
+  padding-right: 25px;
+}
+
+#logout-button span {
+  cursor: pointer;
+  display: inline-block;
+  position: relative;
+  transition: 0.5s;
+}
+
+#logout-button span:after {
+  content: '\00bb';
+  position: absolute;
+  opacity: 0;
+  top: 0;
+  right: -20px;
+  transition: 0.5s;
+}
+
+#logout-button:hover span:after {
+  opacity: 1;
+  right: 0;
+}
+
+#logout-button:active {
+  /*background-color: rgba(255,255,255,0.95);*/
+  /*color: #000;*/
+  border-color: #fff;
+}

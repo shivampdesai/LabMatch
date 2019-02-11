@@ -1,106 +1,273 @@
 import React, { Component } from 'react';
 import 'whatwg-fetch';
 
+import {
+  getFromStorage,
+  setInStorage
+} from '../../utils/storage';
+
 class Home extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      counters: []
+      token: '',
+      firstName: '',
+      lastName: '',
+      email: '',
+      type: '',
+      studentYear: '',
+      studentClassTaken: '',
+      studentMajor: '',
+      studentDepartmentOfInterest: '',
+      professorsArray: []
     };
 
-    this.newCounter = this.newCounter.bind(this);
-    this.incrementCounter = this.incrementCounter.bind(this);
-    this.decrementCounter = this.decrementCounter.bind(this);
-    this.deleteCounter = this.deleteCounter.bind(this);
 
-    this._modifyCounter = this._modifyCounter.bind(this);
   }
 
   componentDidMount() {
-    fetch('/api/counters')
-      .then(res => res.json())
-      .then(json => {
+    document.title = "LabMatch"
+
+    var token = getFromStorage('labMatcher');
+
+      if (token) {
+        token = token.token
+        //verify token
+        fetch('/verify?token=' + token)
+        .then (res => res.json())
+        .then(json => {
+          console.log(json)
+          if (json.success){
+              this.setState({
+                token: token
+              })
+
+              fetch('/getuser?token=' + token)
+              .then(res => res.json())
+              .then(json => {
+                this.setState({
+                  firstName: json.firstName,
+                  lastName: json.lastName,
+                  email: json.email,
+                  type: json.type,
+                  studentYear: json.studentYear,
+                  studentClassTaken: json.studentClassTaken,
+                  studentMajor: json.studentMajor,
+                  studentDepartmentOfInterest: json.studentDepartmentOfInterest
+                });
+              })
+
+              fetch('/getprofs')
+              .then(res => res.json())
+              .then(json => {
+                this.chooseLabs(json)
+              })
+
+          } else {
+            window.location = '/login'
+          }
+        })
+
+      } else {
+        window.location = '/login'
+      }
+  }
+
+  chooseLabs(profArray){
+    //for every lab calculate total score
+    for (var i = 0; i < profArray.length; i++){
+      console.log(this.calcTotalScore(profArray[i]));
+      if (this.calcTotalScore(profArray[i]) >= 30){
+        //add to state array
+        console.log(profArray[i]);
         this.setState({
-          counters: json
-        });
-      });
+          professorsArray: this.state.professorsArray.concat(profArray[i])
+        })
+      }
+    }
   }
 
-  newCounter() {
-    fetch('/api/counters', { method: 'POST' })
-      .then(res => res.json())
-      .then(json => {
-        let data = this.state.counters;
-        data.push(json);
-
-        this.setState({
-          counters: data
-        });
-      });
+  calcTotalScore(prof){
+    return this.calcYearScore(prof.professorYearsLookingFor) + this.calcMajorScore(prof.professorMajors) +
+    this.calcClassesScore(prof.professorClassesNeeded) + this.calcDepartmentScore(prof.professorDepartment)
   }
 
-  incrementCounter(index) {
-    const id = this.state.counters[index]._id;
+  calcMajorScore(majorsRequired){
+    var majorArray = majorsRequired.split(', ')
 
-    fetch(`/api/counters/${id}/increment`, { method: 'PUT' })
-      .then(res => res.json())
-      .then(json => {
-        this._modifyCounter(index, json);
-      });
+    for (var i = 0; i < majorArray.length; i++){
+      if (this.state.studentMajor.valueOf() === majorArray[i].valueOf()){
+        return 10;
+      }
+    }
+    return 0;
   }
 
-  decrementCounter(index) {
-    const id = this.state.counters[index]._id;
+  calcClassesScore(classesRequired){
+    var profClassArray = classesRequired.split(', ')
+    var studentClassArray = this.state.studentClassTaken.split(', ')
 
-    fetch(`/api/counters/${id}/decrement`, { method: 'PUT' })
-      .then(res => res.json())
-      .then(json => {
-        this._modifyCounter(index, json);
-      });
-  }
+    var matchCount = 0;
 
-  deleteCounter(index) {
-    const id = this.state.counters[index]._id;
-
-    fetch(`/api/counters/${id}`, { method: 'DELETE' })
-      .then(_ => {
-        this._modifyCounter(index, null);
-      });
-  }
-
-  _modifyCounter(index, data) {
-    let prevData = this.state.counters;
-
-    if (data) {
-      prevData[index] = data;
-    } else {
-      prevData.splice(index, 1);
+    for (var i = 0; i < profClassArray.length; i++){
+      for (var j = 0; j < studentClassArray.length; j++){
+        if (profClassArray[i].valueOf() === studentClassArray[j].valueOf()){
+          matchCount++;
+        }
+      }
     }
 
-    this.setState({
-      counters: prevData
-    });
+    return (matchCount/profClassArray.length) * 10;
+
   }
 
+  calcYearScore(yearsRequired){
+    if (yearsRequired.includes(this.state.studentYear)) {
+      return 10
+    }
+    return 0
+  }
+
+  calcDepartmentScore(departmentRequired){
+    if (departmentRequired.valueOf() === this.state.studentDepartmentOfInterest.valueOf()){
+      return 10
+    }
+    return 0
+  }
+
+
+
+  logout(){
+      fetch('/logout?token=' + this.state.token)
+      .then(res => res.json())
+      .then(json => {
+        if (json.success){
+          this.setState({
+            token: ''
+          });
+
+          window.location = '/login'
+        }
+      })
+
+  }
+
+
   render() {
+
+    let matches = this.state.professorsArray
     return (
-      <>
-        <p>Counters:</p>
 
-        <ul>
-          { this.state.counters.map((counter, i) => (
-            <li key={i}>
-              <span>{counter.count} </span>
-              <button onClick={() => this.incrementCounter(i)}>+</button>
-              <button onClick={() => this.decrementCounter(i)}>-</button>
-              <button onClick={() => this.deleteCounter(i)}>x</button>
-            </li>
-          )) }
-        </ul>
+      <div className="App">
 
-        <button onClick={this.newCounter}>New counter</button>
-      </>
+      <section id="login-header-section">
+          <h1 className="login-header-title">LabMatch</h1>
+      </section>
+      <section id="results-main-section">
+          <div className="row" id="results-main-row">
+              <div className="col" style={{padding: '0px'}}>
+                  <div className="container registration student container" id="results-container">
+                      <h3 id="results_title">Student Profile</h3>
+                      <h6 id="results_subtitle">View the information you entered for your student profile.</h6>
+                      <div id="matches_tile">
+                          <div className="row" id="results-divider">
+                              <div className="col" id="results-col">
+                                  <h5 id="results_h5">Name:</h5>
+                              </div>
+                              <div className="col" id="field-col">
+                                  <h6 id="results_h6">{this.state.firstName + " " + this.state.lastName}</h6>
+                              </div>
+                          </div>
+                          <div className="row" id="results-divider">
+                              <div className="col" id="results-col">
+                                  <h5 id="results_h5">Major:</h5>
+                              </div>
+                              <div className="col d-md-flex" id="field-col">
+                                  <h6 id="results_h6">{this.state.studentMajor}</h6>
+                              </div>
+                          </div>
+                          <div className="row" id="results-divider">
+                              <div className="col" id="results-col">
+                                  <h5 id="results_h5">Graduation Year:</h5>
+                              </div>
+                              <div className="col d-md-flex" id="field-col">
+                                  <h6 id="results_h6">{this.state.studentYear}</h6>
+                              </div>
+                          </div>
+                          <div className="row" id="results-divider">
+                              <div className="col" id="results-col">
+                                  <h5 id="results_h5">Email:</h5>
+                              </div>
+                              <div className="col d-md-flex" id="field-col">
+                                  <h6 id="results_h6">{this.state.email}</h6>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+
+              <div className="col" style={{padding: '0px',height: 'auto',width: 'auto'}}>
+                  <div className="container registration student container" id="results-container">
+                      <h3 id="results_title">Lab Matches</h3>
+                      <h6 id="results_subtitle">View the research labs that most closely align with your background.</h6>
+
+
+
+
+
+              {matches.map(m =>   <div id="matches_tile">
+                                        <div className="row" id="results-divider">
+                                            <div className="col" id="results-col">
+                                                <h5 id="results_h5">Researcher/Professor:</h5>
+                                            </div>
+                                            <div className="col" id="field-col">
+                                                <h6 id="results_h6">{m.firstName + " " + m.lastName}</h6>
+                                            </div>
+                                        </div>
+                                        <div className="row" id="results-divider">
+                                            <div className="col" id="results-col">
+                                                <h5 id="results_h5">Department:</h5>
+                                            </div>
+                                            <div className="col d-md-flex" id="field-col">
+                                                <h6 id="results_h6">{m.professorDepartment}</h6>
+                                            </div>
+                                        </div>
+                                        <div className="row" id="results-divider">
+                                            <div className="col" id="results-col">
+                                                <h5 id="results_h5">Required Courses:</h5>
+                                            </div>
+                                            <div className="col d-md-flex" id="field-col">
+                                                <h6 id="results_h6">{m.professorClassesNeeded}</h6>
+                                            </div>
+                                        </div>
+                                        <div className="row" id="results-divider">
+                                            <div className="col" id="results-col">
+                                                <h5 id="results_h5">Lab Description:</h5>
+                                            </div>
+
+
+                                        </div>
+                                        <div className="row" id="results-divider">
+                                          <div className="col" id="results-col">
+                                             <h6 id="results_h6">{m.professorLabSnippet}</h6>
+                                           </div>
+                                        </div>
+                                        <div className="row" id="results-divider">
+                                            <div className="col"><button className="btn btn-primary" type="button" id="login-button"><span><a href={"mailto:" + m.email}>CONTACT</a></span></button></div>
+                                        </div>
+                                    </div>) }
+
+                                    </div>
+                                </div>
+
+          </div>
+          <button className="btn btn-primary" type="button" id="logout-button" onClick={() => this.logout()}><span>LOGOUT</span></button>
+      </section>
+
+
+      </div>
+
     );
   }
 }
