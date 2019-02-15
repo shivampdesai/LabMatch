@@ -2,5 +2,5 @@
 
 module.exports = {
   db: 'mongodb://<dbuser>:<dbpassword>@ds119129.mlab.com:19129/labmatchingdb',
-  db_dev: 'mongodb://shivampdesai:pratish123@ds119129.mlab.com:19129/labmatchingdb',
+  db_dev: 'mongodb://<dbuser>:<dbpassword>@ds119129.mlab.com:19129/labmatchingdb',
 };
